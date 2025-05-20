@@ -31,6 +31,13 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
+    // Add this method for /out-of-stock BEFORE the getBookById method
+    @GetMapping("/out-of-stock")
+    public ResponseEntity<List<Book>> getOutOfStockBooks() {
+        List<Book> outOfStockBooks = bookService.getOutOfStockBooks();
+        return ResponseEntity.ok(outOfStockBooks);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable Long id) {
         logger.info("Fetching book with ID: {}", id);
