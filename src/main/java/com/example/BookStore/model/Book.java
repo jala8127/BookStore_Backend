@@ -1,46 +1,61 @@
 package com.example.BookStore.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "books")
-@Data
 public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Title is required")
+    @Column(nullable = false)
     private String title;
+
+    @NotBlank(message = "Author is required")
+    @Column(nullable = false)
     private String author;
-    private double price;
-    private int stock;
-    private String genre;
+
+    @NotBlank(message = "Category is required")
     private String category;
 
+    @NotBlank(message = "Genre is required")
+    private String genre;
+
+    @Positive(message = "Price must be greater than 0")
+    private double price;
+
+    @Min(value = 0, message = "Stock cannot be negative")
+    private int stock;
+
+    @NotBlank(message = "Description is required")
     @Column(length = 1000)
     private String description;
 
     private String imageUrl;
 
-    public Long getId() {
-        return id;
+    // --- Default constructor
+    public Book() {}
+
+    // --- Parameterized constructor
+    public Book(String title, String author, String category, String genre, double price, int stock, String description, String imageUrl) {
+        this.title = title;
+        this.author = author;
+        this.category = category;
+        this.genre = genre;
+        this.price = price;
+        this.stock = stock;
+        this.description = description;
+        this.imageUrl = imageUrl;
     }
 
-    @Override
-    public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", author='" + author + '\'' +
-                ", price=" + price +
-                ", stock=" + stock +
-                ", genre='" + genre + '\'' +
-                ", category='" + category + '\'' +
-                ", description='" + description + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
-                '}';
+    // --- Getters and Setters
+
+    public Long getId() {
+        return id;
     }
 
     public void setId(Long id) {
@@ -63,6 +78,22 @@ public class Book {
         this.author = author;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
     public double getPrice() {
         return price;
     }
@@ -77,22 +108,6 @@ public class Book {
 
     public void setStock(int stock) {
         this.stock = stock;
-    }
-
-    public String getGenre() {
-        return genre;
-    }
-
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 
     public String getDescription() {
