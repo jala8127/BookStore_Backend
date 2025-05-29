@@ -10,7 +10,24 @@ import java.nio.file.Paths;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    // CORS configuration bean
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:4200")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true);
+    }
+
+    // ✅ Serve images from /uploads/images
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        Path uploadDir = Paths.get("uploads/images");
+        String uploadPath = uploadDir.toFile().getAbsolutePath();
+
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("file:" + uploadPath + "/");
+    }
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -18,18 +35,10 @@ public class WebConfig implements WebMvcConfigurer {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
                         .allowedOrigins("http://localhost:4200")
-                        .allowedMethods("*");
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
         };
-    }
-
-    // Serve static images from: http://localhost:8080/images/<filename>
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        Path uploadDir = Paths.get("uploads/images"); // path on filesystem
-        String uploadPath = uploadDir.toFile().getAbsolutePath(); // absolute path
-
-        registry.addResourceHandler("/images/**") // URL path
-                .addResourceLocations("file:" + uploadPath + "/"); // real path
     }
 }

@@ -2,7 +2,9 @@ package com.example.BookStore.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "books")
 public class Book {

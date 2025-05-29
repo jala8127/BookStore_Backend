@@ -14,6 +14,7 @@ public class User {
     private String name;
     private String phone;
     private String password;
+    private String address; // ✅ Added address field
 
     // Getters and Setters
 
@@ -48,4 +49,13 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
 }

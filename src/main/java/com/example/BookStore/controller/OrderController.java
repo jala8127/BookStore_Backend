@@ -40,7 +40,7 @@ public class OrderController {
         return bookRepository.countByStock(0);
     }
 
-    @GetMapping("/orders/count")
+    @GetMapping("/count")
     public long getTotalOrdersCount() {
         return orderRepository.count();
     }
@@ -59,13 +59,13 @@ public class OrderController {
 
     @GetMapping("/user")
     public ResponseEntity<List<Order>> getOrdersByEmail(@RequestParam String email) {
-        List<Order> orders = orderRepository.findByUser_Email(email); // ✅ updated method call
+        List<Order> orders = orderRepository.findByUser_Email(email);
         return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/user-orders/{email}")
     public ResponseEntity<List<Order>> getOrdersByUserEmail(@PathVariable String email) {
-        List<Order> orders = orderRepository.findByUser_Email(email); // ✅ updated method call
+        List<Order> orders = orderRepository.findByUser_Email(email);
         return ResponseEntity.ok(orders);
     }
 
@@ -100,5 +100,12 @@ public class OrderController {
         order.setStatus(status);
         orderRepository.save(order);
         return ResponseEntity.ok("Order status updated to: " + status);
+    }
+
+    @GetMapping("/completed")
+    public ResponseEntity<List<Order>> getCompletedOrders() {
+        List<Order> completedOrders = orderRepository.findByStatus("Completed");
+        System.out.println(completedOrders);
+        return ResponseEntity.ok(completedOrders);
     }
 }
