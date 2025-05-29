@@ -102,8 +102,8 @@ public class CartController {
     }
 
     /** Clear all cart items for a specific user */
-    @DeleteMapping("/clear/{email}")
-    public ResponseEntity<?> clearCart(@PathVariable String email) {
+    @DeleteMapping("/clear")
+    public ResponseEntity<?> clearCart(@RequestParam String email) {
         try {
             String decodedEmail = URLDecoder.decode(email, StandardCharsets.UTF_8);
             cartService.clearCart(decodedEmail);
@@ -112,4 +112,5 @@ public class CartController {
             return ResponseEntity.internalServerError().body("Failed to clear cart");
         }
     }
+
 }

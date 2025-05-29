@@ -13,19 +13,16 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Link to Book entity
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
-    // Link to User entity
     @ManyToOne
     @JoinColumn(name = "user_email", referencedColumnName = "email", nullable = false)
     private User user;
 
-    // Snapshot fields for book details (optional, to keep history)
     private String bookTitle;
-    private String bookImage;
+    private String bookImageUrl;
     private double bookPrice;
 
     private int quantity;
@@ -38,7 +35,7 @@ public class Cart {
         this.user = user;
         this.book = book;
         this.bookTitle = book.getTitle();
-        this.bookImage = book.getImageUrl();
+        this.bookImageUrl = book.getImageUrl();
         this.bookPrice = book.getPrice();
         this.quantity = quantity;
     }

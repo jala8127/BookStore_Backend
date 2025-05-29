@@ -1,9 +1,6 @@
 package com.example.BookStore.controller;
 
 import com.example.BookStore.model.Order;
-import com.example.BookStore.repository.BookRepository;
-import com.example.BookStore.repository.OrderRepository;
-import com.example.BookStore.repository.RequestRepository;
 import com.example.BookStore.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,93 +16,73 @@ import java.util.Optional;
 public class OrderController {
 
     @Autowired
-    private BookRepository bookRepository;
-
-    @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private RequestRepository requestRepository;
-
-    @Autowired
     private OrderService orderService;
 
-    @GetMapping("/books/count")
-    public long getTotalVarieties() {
-        return bookRepository.count();
+    // 📚 Book info
+    @GetMapping("/books/total-count")
+    public long getTotalBooksCount() {
+        return orderService.getTotalBooksCount();
     }
 
-    @GetMapping("/books/out-of-stock/count")
-    public long getOutOfStockCount() {
-        return bookRepository.countByStock(0);
+    @GetMapping("/books/out-of-stock")
+    public long getOutOfStockBookCount() {
+        return orderService.getOutOfStockBookCount();
     }
 
+    // 📦 Order metrics
     @GetMapping("/count")
     public long getTotalOrdersCount() {
-        return orderRepository.count();
+        return orderService.getTotalOrders();
     }
 
-    @GetMapping("/total")
-    public ResponseEntity<Long> getTotalOrders() {
-        long total = orderService.getTotalOrders();
-        return ResponseEntity.ok(total);
-    }
-
+    // 🛒 Place new order
     @PostMapping
     public ResponseEntity<Order> placeOrder(@RequestBody Order order) {
         Order savedOrder = orderService.placeOrder(order);
         return ResponseEntity.ok(savedOrder);
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<List<Order>> getOrdersByEmail(@RequestParam String email) {
-        List<Order> orders = orderRepository.findByUser_Email(email);
-        return ResponseEntity.ok(orders);
-    }
-
-    @GetMapping("/user-orders/{email}")
+    // 👤 Get user orders by email
+    @GetMapping("/user/{email}")
     public ResponseEntity<List<Order>> getOrdersByUserEmail(@PathVariable String email) {
-        List<Order> orders = orderRepository.findByUser_Email(email);
+        List<Order> orders = orderService.getOrdersByEmail(email);
         return ResponseEntity.ok(orders);
     }
 
+    // 📋 Get all orders
     @GetMapping("/all")
     public ResponseEntity<List<Order>> getAllOrders() {
-        return ResponseEntity.ok(orderRepository.findAll());
+        return ResponseEntity.ok(orderService.getAllOrders());
     }
 
     @GetMapping("/status")
     public ResponseEntity<List<Order>> getOrdersByStatus(@RequestParam String status) {
-        return ResponseEntity.ok(orderRepository.findByStatus(status));
+        return ResponseEntity.ok(orderService.getOrdersByStatus(status));
     }
 
-    @PutMapping("/{id}/status")
-    public ResponseEntity<?> updateOrderStatus(@PathVariable Long id, @RequestBody Map<String, String> body) {
-        Optional<Order> optionalOrder = orderRepository.findById(id);
-        if (optionalOrder.isPresent()) {
-            Order order = optionalOrder.get();
-            order.setStatus(body.get("status"));
-            orderRepository.save(order);
-            return ResponseEntity.ok().build();
+    @GetMapping("/completed")
+    public ResponseEntity<List<Order>> getCompletedOrders() {
+        return ResponseEntity.ok(orderService.getCompletedOrders());
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<String> updateOrderStatus(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        String status = body.get("status");
+        if (status == null) {
+            return ResponseEntity.badRequest().body("Status is required.");
+        }
+
+        boolean updated = orderService.updateOrderStatus(id, status);
+        if (updated) {
+            return ResponseEntity.ok("Order status updated to: " + status);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PutMapping("/update-status/{orderId}")
-    public ResponseEntity<String> updateOrderStatus(@PathVariable Long orderId, @RequestParam String status) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
-
-        order.setStatus(status);
-        orderRepository.save(order);
-        return ResponseEntity.ok("Order status updated to: " + status);
-    }
-
-    @GetMapping("/completed")
-    public ResponseEntity<List<Order>> getCompletedOrders() {
-        List<Order> completedOrders = orderRepository.findByStatus("Completed");
-        System.out.println(completedOrders);
-        return ResponseEntity.ok(completedOrders);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
+        boolean deleted = orderService.deleteOrder(id);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }
