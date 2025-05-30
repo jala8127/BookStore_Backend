@@ -18,7 +18,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    // 📚 Book info
+    // Book info
     @GetMapping("/books/total-count")
     public long getTotalBooksCount() {
         return orderService.getTotalBooksCount();
@@ -29,27 +29,27 @@ public class OrderController {
         return orderService.getOutOfStockBookCount();
     }
 
-    // 📦 Order metrics
+    // Order metrics
     @GetMapping("/count")
     public long getTotalOrdersCount() {
         return orderService.getTotalOrders();
     }
 
-    // 🛒 Place new order
+    // Place new order
     @PostMapping
     public ResponseEntity<Order> placeOrder(@RequestBody Order order) {
         Order savedOrder = orderService.placeOrder(order);
         return ResponseEntity.ok(savedOrder);
     }
 
-    // 👤 Get user orders by email
-    @GetMapping("/user/{email}")
+    // Get user orders by email
+    @GetMapping("/user-orders/{email}")
     public ResponseEntity<List<Order>> getOrdersByUserEmail(@PathVariable String email) {
         List<Order> orders = orderService.getOrdersByEmail(email);
         return ResponseEntity.ok(orders);
     }
 
-    // 📋 Get all orders
+    //  Get all orders
     @GetMapping("/all")
     public ResponseEntity<List<Order>> getAllOrders() {
         return ResponseEntity.ok(orderService.getAllOrders());
