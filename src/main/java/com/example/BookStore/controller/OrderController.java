@@ -1,7 +1,9 @@
 package com.example.BookStore.controller;
 
 import com.example.BookStore.model.Order;
+import com.example.BookStore.repository.OrderRepository;
 import com.example.BookStore.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+    private OrderRepository orderRepository;
 
     // Book info
     @GetMapping("/books/total-count")
@@ -37,16 +40,15 @@ public class OrderController {
 
     // Place new order
     @PostMapping
-    public ResponseEntity<Order> placeOrder(@RequestBody Order order) {
+    public ResponseEntity<Order> placeOrder(@Valid @RequestBody Order order) {
         Order savedOrder = orderService.placeOrder(order);
         return ResponseEntity.ok(savedOrder);
     }
 
     // Get user orders by email
-    @GetMapping("/user-orders/{email}")
-    public ResponseEntity<List<Order>> getOrdersByUserEmail(@PathVariable String email) {
-        List<Order> orders = orderService.getOrdersByEmail(email);
-        return ResponseEntity.ok(orders);
+    @GetMapping("/user/{email}")
+    public List<Order> getOrdersByUserEmail(@PathVariable String email) {
+        return orderService.getOrdersByEmail(email);
     }
 
     //  Get all orders

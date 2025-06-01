@@ -14,7 +14,7 @@ public class User {
     private String name;
     private String phone;
     private String password;
-    private String address; // ✅ Added address field
+    private String address;
 
     // Getters and Setters
 

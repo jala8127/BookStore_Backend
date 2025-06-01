@@ -64,7 +64,7 @@ public class OrderService {
 
     //Get orders placed by a specific user's email
     public List<Order> getOrdersByEmail(String email) {
-        return orderRepository.findByUser_Email(email);
+        return orderRepository.findByUserEmail(email);
     }
 
     //Get all orders in the system
