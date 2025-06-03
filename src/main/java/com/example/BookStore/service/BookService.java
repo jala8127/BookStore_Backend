@@ -57,7 +57,7 @@ public class BookService {
     public Book addBookWithImage(Book book, MultipartFile imageFile) throws IOException {
         if (imageFile != null && !imageFile.isEmpty()) {
             String fileName = saveImageFile(imageFile);
-            book.setImageUrl(fileName); // only the file name, not full path
+            book.setImageUrl(fileName);
             logger.info("Saved image file: {}", fileName);
         }
         return bookRepository.save(book);

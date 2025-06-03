@@ -17,7 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("api/books")
-@CrossOrigin(origins = "http://localhost:4200") // Angular frontend
+@CrossOrigin(origins = "http://localhost:4200")
 public class BookController {
 
     private static final Logger logger = LoggerFactory.getLogger(BookController.class);
